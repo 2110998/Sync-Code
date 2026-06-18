@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Solicitação Recebida — Sync Code</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy:#0A0F1E; --navy2:#0D1629;
+      --glow:#00D4FF; --cyan:#4DE8F0;
+      --white:#F0F8FF; --muted:#8AA3B8;
+      --border:rgba(0,212,255,.18);
+    }
+    body {
+      background: var(--navy); color: var(--white); font-family:'Inter',sans-serif;
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      padding: 24px; text-align: center; overflow-x: hidden;
+    }
+    .card {
+      max-width: 480px; width: 100%;
+      background: var(--navy2); border: 1px solid var(--border); border-radius: 18px;
+      padding: 48px 36px; position: relative; z-index: 2;
+    }
+    .check-circle {
+      width: 76px; height: 76px; border-radius: 50%; margin: 0 auto 28px;
+      background: linear-gradient(135deg, rgba(0,212,255,.18), rgba(77,232,240,.1));
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 40px rgba(0,212,255,.25);
+    }
+    .check-circle svg { width: 36px; height: 36px; }
+    .nav-logo {
+      font-family:'Orbitron',sans-serif; font-weight:900; font-size:.9rem; letter-spacing:.14em;
+      color: var(--glow); text-shadow: 0 0 16px rgba(0,212,255,.4); margin-bottom: 22px;
+    }
+    .nav-logo span { color: var(--white); }
+    h1 {
+      font-family:'Orbitron',sans-serif; font-size: clamp(1.5rem, 5vw, 2rem);
+      font-weight: 700; margin-bottom: 16px; line-height: 1.2;
+    }
+    h1 .accent {
+      color: transparent; background: linear-gradient(135deg, var(--glow), var(--cyan));
+      -webkit-background-clip: text; background-clip: text;
+    }
+    p.sub { color: var(--muted); font-size: .95rem; line-height: 1.7; margin-bottom: 32px; }
+    .steps { text-align: left; margin-bottom: 36px; }
+    .step { display: flex; gap: 14px; margin-bottom: 16px; align-items: flex-start; }
+    .step-num {
+      flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%;
+      background: rgba(0,212,255,.1); border: 1px solid var(--border); color: var(--glow);
+      display: flex; align-items: center; justify-content: center;
+      font-size: .75rem; font-weight: 700; font-family:'Orbitron',sans-serif;
+    }
+    .step-text { font-size: .87rem; color: var(--white); line-height: 1.6; }
+    .step-text span { color: var(--muted); font-size: .82rem; display: block; margin-top: 2px; }
+
+    .btn-primary {
+      display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+      width: 100%; background: linear-gradient(135deg, var(--glow), var(--cyan));
+      color: var(--navy); font-weight: 700; padding: 15px 24px; border-radius: 9px;
+      border: none; cursor: pointer; font-family:'Orbitron',sans-serif; font-size: .8rem;
+      letter-spacing: .08em; text-decoration: none; margin-bottom: 12px;
+      transition: opacity .2s, transform .15s;
+      box-shadow: 0 4px 28px rgba(0,212,255,.22);
+    }
+    .btn-primary:hover { opacity: .9; transform: translateY(-2px); }
+    .btn-primary img { width: 20px; height: 20px; }
+
+    .btn-ghost {
+      display: inline-block; width: 100%;
+      background: transparent; color: var(--muted); font-weight: 500;
+      padding: 13px 24px; border-radius: 9px; border: 1px solid var(--border);
+      cursor: pointer; font-size: .85rem; text-decoration: none;
+      transition: border-color .2s, color .2s;
+    }
+    .btn-ghost:hover { border-color: var(--glow); color: var(--glow); }
+
+    footer { margin-top: 28px; color: var(--muted); font-size: .75rem; letter-spacing: .03em; }
+    footer span { color: var(--glow); }
+
+    canvas#network { position: fixed; inset: 0; width: 100%; height: 100%; opacity: .3; z-index: 1; }
+  </style>
+</head>
+<body>
+  <canvas id="network"></canvas>
+
+  <div class="card">
+    <div class="nav-logo">SYNC<span> CODE</span></div>
+
+    <div class="check-circle">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#4DE8F0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="20 6 9 17 4 12"></polyline>
+      </svg>
+    </div>
+
+    <h1>Solicitação <span class="accent">recebida</span> com sucesso!</h1>
+    <p class="sub">Obrigado pelo contato! Recebi seu pedido de orçamento e já estou analisando os detalhes do seu projeto.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-text">Análise do seu pedido<span>Vou estudar suas necessidades com calma</span></div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-text">Retorno em até 24h<span>Te chamo no WhatsApp ou e-mail com a proposta</span></div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-text">Conversamos os detalhes<span>Alinhamos prazo, valor e escopo juntos</span></div>
+      </div>
+    </div>
+
+    <a href="https://wa.me/5511941474285?text=Oi%2C%20acabei%20de%20solicitar%20um%20or%C3%A7amento%20pelo%20Google%20Meu%20Neg%C3%B3cio!" class="btn-primary" target="_blank">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="" />
+      Falar agora no WhatsApp
+    </a>
+    <a href="index.html" class="btn-ghost">Voltar ao site</a>
+
+    <footer>© 2026 <span>Sync Code</span> — Software & Development</footer>
+  </div>
+
+  <script>
+  (function(){
+    const canvas = document.getElementById('network');
+    const ctx = canvas.getContext('2d');
+    let W, H, nodes = [];
+    function resize(){ W = canvas.width = canvas.offsetWidth; H = canvas.height = canvas.offsetHeight; }
+    function init(){ nodes = []; const c = Math.floor((W*H)/16000); for(let i=0;i<c;i++) nodes.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,r:Math.random()*2+1.2}); }
+    function draw(){
+      ctx.clearRect(0,0,W,H);
+      for(let i=0;i<nodes.length;i++) for(let j=i+1;j<nodes.length;j++){
+        const dx=nodes[i].x-nodes[j].x, dy=nodes[i].y-nodes[j].y, d=Math.sqrt(dx*dx+dy*dy);
+        if(d<130){ ctx.beginPath(); ctx.moveTo(nodes[i].x,nodes[i].y); ctx.lineTo(nodes[j].x,nodes[j].y); ctx.strokeStyle=`rgba(0,212,255,${(1-d/130)*.3})`; ctx.lineWidth=.7; ctx.stroke(); }
+      }
+      nodes.forEach(n=>{ ctx.beginPath(); ctx.arc(n.x,n.y,n.r,0,Math.PI*2); ctx.fillStyle='rgba(77,232,240,.6)'; ctx.fill(); n.x+=n.vx; n.y+=n.vy; if(n.x<0||n.x>W)n.vx*=-1; if(n.y<0||n.y>H)n.vy*=-1; });
+      requestAnimationFrame(draw);
+    }
+    window.addEventListener('resize',()=>{resize();init();});
+    resize(); init(); draw();
+  })();
+  </script>
+</body>
+</html>
