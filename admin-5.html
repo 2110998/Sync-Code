@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sync Code — Painel Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy:  #0A0F1E; --navy2: #0D1629; --navy3: #111827;
+      --glow:  #00D4FF; --cyan:  #4DE8F0;
+      --white: #F0F8FF; --muted: #8AA3B8;
+      --border: rgba(0,212,255,.18); --red: #FF4E6A;
+      --green: #00E5A0;
+    }
+    body { background: var(--navy); color: var(--white); font-family: 'Inter', sans-serif; min-height: 100vh; }
+
+    /* ── LOGIN ── */
+    #login-screen {
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    }
+    .login-box {
+      background: var(--navy2); border: 1px solid var(--border); border-radius: 16px;
+      padding: 48px 40px; width: 100%; max-width: 400px; text-align: center;
+    }
+    .login-logo {
+      font-family: 'Orbitron', sans-serif; font-size: 1.3rem; font-weight: 900;
+      color: var(--glow); text-shadow: 0 0 18px rgba(0,212,255,.4);
+      margin-bottom: 8px;
+    }
+    .login-sub { color: var(--muted); font-size: .8rem; margin-bottom: 36px; letter-spacing: .06em; }
+
+    .field { margin-bottom: 18px; text-align: left; }
+    .field label { display: block; font-size: .75rem; color: var(--muted); margin-bottom: 7px; letter-spacing: .06em; }
+    .field input {
+      width: 100%; background: var(--navy); border: 1px solid var(--border); border-radius: 7px;
+      padding: 11px 15px; color: var(--white); font-size: .9rem; font-family: 'Inter', sans-serif;
+      outline: none; transition: border-color .2s;
+    }
+    .field input:focus { border-color: var(--glow); }
+
+    .btn-full {
+      width: 100%;
+      background: linear-gradient(135deg, var(--glow), var(--cyan));
+      color: var(--navy); font-weight: 700;
+      padding: 13px; border-radius: 7px; border: none; cursor: pointer;
+      font-family: 'Orbitron', sans-serif; font-size: .78rem; letter-spacing: .1em;
+      transition: opacity .2s; margin-top: 8px;
+    }
+    .btn-full:hover { opacity: .88; }
+    .login-err { color: var(--red); font-size: .8rem; margin-top: 12px; }
+
+    /* ── DASHBOARD ── */
+    #dashboard { display: none; }
+
+    header {
+      background: var(--navy2); border-bottom: 1px solid var(--border);
+      padding: 16px 36px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .hdr-logo { font-family: 'Orbitron', sans-serif; font-weight: 900; color: var(--glow); font-size: 1rem; }
+    .hdr-logo span { color: var(--white); }
+    .hdr-user { display: flex; align-items: center; gap: 14px; }
+    .hdr-email { font-size: .78rem; color: var(--muted); }
+    .btn-logout {
+      background: transparent; border: 1px solid var(--border);
+      color: var(--muted); padding: 6px 14px; border-radius: 5px;
+      font-size: .75rem; cursor: pointer; font-family: 'Inter', sans-serif;
+      transition: border-color .2s, color .2s;
+    }
+    .btn-logout:hover { border-color: var(--red); color: var(--red); }
+
+    main { max-width: 1100px; margin: 0 auto; padding: 40px 24px 80px; }
+
+    .page-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.5rem; font-weight: 700; margin-bottom: 32px;
+    }
+    .page-title span { color: var(--glow); }
+
+    /* ── FORM CARD ── */
+    .form-card {
+      background: var(--navy2); border: 1px solid var(--border); border-radius: 14px;
+      padding: 32px 36px; margin-bottom: 48px;
+    }
+    .form-card h3 {
+      font-family: 'Orbitron', sans-serif; font-size: .95rem; font-weight: 700;
+      margin-bottom: 24px; color: var(--cyan);
+    }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .form-grid .span2 { grid-column: span 2; }
+    .field textarea {
+      width: 100%; background: var(--navy); border: 1px solid var(--border); border-radius: 7px;
+      padding: 11px 15px; color: var(--white); font-size: .88rem; font-family: 'Inter', sans-serif;
+      outline: none; resize: vertical; min-height: 100px;
+      transition: border-color .2s;
+    }
+    .field textarea:focus { border-color: var(--glow); }
+    .field select {
+      width: 100%; background: var(--navy); border: 1px solid var(--border); border-radius: 7px;
+      padding: 11px 15px; color: var(--white); font-size: .88rem; font-family: 'Inter', sans-serif;
+      outline: none; transition: border-color .2s; cursor: pointer;
+    }
+    .field select:focus { border-color: var(--glow); }
+
+    .form-actions { display: flex; gap: 12px; margin-top: 24px; }
+    .btn-save {
+      background: linear-gradient(135deg, var(--glow), var(--cyan));
+      color: var(--navy); font-weight: 700;
+      padding: 11px 28px; border-radius: 7px; border: none; cursor: pointer;
+      font-family: 'Orbitron', sans-serif; font-size: .74rem; letter-spacing: .1em;
+      transition: opacity .2s;
+    }
+    .btn-save:hover { opacity: .88; }
+    .btn-cancel {
+      background: transparent; border: 1px solid var(--border);
+      color: var(--muted); padding: 11px 24px; border-radius: 7px;
+      font-size: .85rem; cursor: pointer; font-family: 'Inter', sans-serif;
+      transition: border-color .2s, color .2s;
+    }
+    .btn-cancel:hover { border-color: var(--muted); color: var(--white); }
+
+    .toast {
+      position: fixed; bottom: 28px; right: 28px; z-index: 999;
+      background: var(--navy2); border: 1px solid var(--green);
+      color: var(--green); padding: 14px 22px; border-radius: 9px;
+      font-size: .85rem; font-weight: 500;
+      display: none; box-shadow: 0 8px 32px rgba(0,229,160,.18);
+    }
+    .toast.err { border-color: var(--red); color: var(--red); box-shadow: 0 8px 32px rgba(255,78,106,.18); }
+    .toast.show { display: block; }
+
+    /* ── PROJECT LIST ── */
+    .list-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 22px;
+    }
+    .list-header h3 { font-family: 'Orbitron', sans-serif; font-size: .95rem; color: var(--cyan); }
+    .btn-new {
+      background: transparent; border: 1px solid var(--glow);
+      color: var(--glow); padding: 9px 20px; border-radius: 7px;
+      font-size: .8rem; cursor: pointer; font-family: 'Orbitron', sans-serif; letter-spacing: .08em;
+      transition: background .2s, color .2s;
+    }
+    .btn-new:hover { background: var(--glow); color: var(--navy); }
+
+    .proj-table { width: 100%; border-collapse: collapse; }
+    .proj-table th {
+      font-size: .7rem; letter-spacing: .12em; text-transform: uppercase;
+      color: var(--muted); font-weight: 600; text-align: left;
+      padding: 0 16px 14px;
+    }
+    .proj-table td {
+      padding: 14px 16px; border-top: 1px solid var(--border);
+      font-size: .88rem; vertical-align: middle;
+    }
+    .proj-table tr:hover td { background: rgba(0,212,255,.04); }
+
+    .proj-thumb {
+      width: 52px; height: 38px; border-radius: 5px;
+      object-fit: cover; background: var(--navy3);
+    }
+    .proj-thumb-empty {
+      width: 52px; height: 38px; border-radius: 5px;
+      background: var(--navy3); display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; opacity: .5;
+    }
+
+    .badge {
+      font-size: .65rem; letter-spacing: .1em; text-transform: uppercase;
+      padding: 3px 10px; border-radius: 99px;
+      background: rgba(0,212,255,.1); color: var(--glow); border: 1px solid var(--border);
+    }
+
+    .tbl-actions { display: flex; gap: 8px; }
+    .btn-edit, .btn-del {
+      padding: 5px 12px; border-radius: 5px;
+      font-size: .73rem; cursor: pointer; border: 1px solid;
+      font-family: 'Inter', sans-serif; transition: all .2s;
+    }
+    .btn-edit { border-color: var(--border); color: var(--muted); background: transparent; }
+    .btn-edit:hover { border-color: var(--glow); color: var(--glow); }
+    .btn-del { border-color: transparent; color: var(--red); background: rgba(255,78,106,.08); }
+    .btn-del:hover { background: rgba(255,78,106,.18); }
+
+    .empty-state { text-align: center; padding: 48px; color: var(--muted); font-size: .9rem; }
+
+    @media (max-width: 640px) {
+      .form-grid { grid-template-columns: 1fr; }
+      .form-grid .span2 { grid-column: span 1; }
+      header { padding: 14px 18px; }
+      main { padding: 24px 16px 60px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">SYNC CODE</div>
+    <div class="login-sub">PAINEL ADMINISTRATIVO</div>
+    <div class="field">
+      <label>E-MAIL</label>
+      <input type="email" id="inp-email" placeholder="admin@synccode.dev" />
+    </div>
+    <div class="field">
+      <label>SENHA</label>
+      <input type="password" id="inp-pass" placeholder="••••••••" />
+    </div>
+    <button class="btn-full" id="btn-login">ENTRAR</button>
+    <div class="login-err" id="login-err"></div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard">
+  <header>
+    <div class="hdr-logo">SYNC <span>CODE</span> <span style="color:var(--muted);font-size:.7rem;font-weight:400;letter-spacing:.14em;">ADMIN</span></div>
+    <div class="hdr-user">
+      <span class="hdr-email" id="hdr-email"></span>
+      <button class="btn-logout" id="btn-logout">Sair</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="page-title">Gerenciar <span>Projetos</span></div>
+
+    <!-- FORM (add / edit) -->
+    <div class="form-card" id="form-card">
+      <h3 id="form-title">+ Novo Projeto</h3>
+      <input type="hidden" id="edit-id" />
+      <div class="form-grid">
+        <div class="field">
+          <label>TÍTULO DO PROJETO</label>
+          <input type="text" id="f-title" placeholder="Ex: Sistema de agendamento" />
+        </div>
+        <div class="field">
+          <label>CATEGORIA</label>
+          <select id="f-category">
+            <option value="SaaS">SaaS</option>
+            <option value="Landing Page">Landing Page</option>
+            <option value="Sistema Web">Sistema Web</option>
+            <option value="E-commerce">E-commerce</option>
+            <option value="Dashboard">Dashboard</option>
+            <option value="API">API</option>
+            <option value="Outro">Outro</option>
+          </select>
+        </div>
+        <div class="field span2">
+          <label>DESCRIÇÃO</label>
+          <textarea id="f-desc" placeholder="Descreva o projeto, tecnologias usadas, resultado..."></textarea>
+        </div>
+        <div class="field">
+          <label>URL DA IMAGEM (capa)</label>
+          <input type="url" id="f-image" placeholder="https://i.imgur.com/..." />
+        </div>
+        <div class="field">
+          <label>LINK DO PROJETO</label>
+          <input type="url" id="f-link" placeholder="https://..." />
+        </div>
+        <div class="field">
+          <label>ORDEM (número)</label>
+          <input type="number" id="f-order" placeholder="1" value="1" min="1" />
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn-save" id="btn-save">SALVAR PROJETO</button>
+        <button class="btn-cancel" id="btn-cancel" style="display:none">Cancelar edição</button>
+      </div>
+    </div>
+
+    <!-- LIST -->
+    <div class="list-header">
+      <h3>Projetos cadastrados</h3>
+    </div>
+    <div id="proj-list">
+      <div class="empty-state">Carregando...</div>
+    </div>
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- FIREBASE -->
+<script type="module">
+  import { initializeApp }
+    from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut }
+    from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
+  import {
+    getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc,
+    doc, orderBy, query, serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCb2ACduDB-zZCaNczUk8bXZPiqq2HH9K4",
+    authDomain: "sync-code-8cdfe.firebaseapp.com",
+    projectId: "sync-code-8cdfe",
+    storageBucket: "sync-code-8cdfe.firebasestorage.app",
+    messagingSenderId: "884067837434",
+    appId: "1:884067837434:web:df8b0044c2daecdb16f043",
+    measurementId: "G-Y1XW9ELD5M"
+  };
+
+  const app  = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db   = getFirestore(app);
+
+  // ── TOAST ──
+  function showToast(msg, err = false) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast show' + (err ? ' err' : '');
+    setTimeout(() => t.className = 'toast', 3000);
+  }
+
+  // ── AUTH STATE ──
+  onAuthStateChanged(auth, user => {
+    if (user) {
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('dashboard').style.display = 'block';
+      document.getElementById('hdr-email').textContent = user.email;
+      loadProjects();
+    } else {
+      document.getElementById('login-screen').style.display = 'flex';
+      document.getElementById('dashboard').style.display = 'none';
+    }
+  });
+
+  // ── LOGIN ──
+  document.getElementById('btn-login').addEventListener('click', async () => {
+    const email = document.getElementById('inp-email').value.trim();
+    const pass  = document.getElementById('inp-pass').value;
+    const errEl = document.getElementById('login-err');
+    errEl.textContent = '';
+    try {
+      await signInWithEmailAndPassword(auth, email, pass);
+    } catch(e) {
+      errEl.textContent = 'E-mail ou senha incorretos.';
+    }
+  });
+  document.getElementById('inp-pass').addEventListener('keydown', e => {
+    if (e.key === 'Enter') document.getElementById('btn-login').click();
+  });
+
+  // ── LOGOUT ──
+  document.getElementById('btn-logout').addEventListener('click', () => signOut(auth));
+
+  // ── LOAD PROJECTS ──
+  async function loadProjects() {
+    const container = document.getElementById('proj-list');
+    try {
+      const q    = query(collection(db, 'projects'), orderBy('order', 'asc'));
+      const snap = await getDocs(q);
+
+      if (snap.empty) {
+        container.innerHTML = '<div class="empty-state">Nenhum projeto cadastrado. Crie o primeiro acima! 🚀</div>';
+        return;
+      }
+
+      let html = `<table class="proj-table">
+        <thead><tr>
+          <th>Capa</th><th>Título</th><th>Categoria</th><th>Link</th><th>Ações</th>
+        </tr></thead><tbody>`;
+
+      snap.forEach(d => {
+        const p = d.data();
+        html += `<tr>
+          <td>${p.imageUrl
+            ? `<img class="proj-thumb" src="${p.imageUrl}" alt="${p.title}" />`
+            : `<div class="proj-thumb-empty">⚡</div>`}</td>
+          <td><strong>${p.title}</strong></td>
+          <td><span class="badge">${p.category}</span></td>
+          <td>${p.link ? `<a href="${p.link}" target="_blank" style="color:var(--glow);font-size:.8rem;">${p.link.replace('https://','').slice(0,30)}…</a>` : '—'}</td>
+          <td>
+            <div class="tbl-actions">
+              <button class="btn-edit" onclick="editProject('${d.id}')">Editar</button>
+              <button class="btn-del" onclick="deleteProject('${d.id}')">Excluir</button>
+            </div>
+          </td>
+        </tr>`;
+      });
+
+      html += '</tbody></table>';
+      container.innerHTML = html;
+
+      // attach globals
+      window._projects = {};
+      snap.forEach(d => window._projects[d.id] = d.data());
+
+    } catch(e) {
+      console.error(e);
+      container.innerHTML = '<div class="empty-state">Configure as credenciais Firebase para carregar projetos.</div>';
+    }
+  }
+
+  // ── SAVE ──
+  document.getElementById('btn-save').addEventListener('click', async () => {
+    const title    = document.getElementById('f-title').value.trim();
+    const category = document.getElementById('f-category').value;
+    const desc     = document.getElementById('f-desc').value.trim();
+    const imageUrl = document.getElementById('f-image').value.trim();
+    const link     = document.getElementById('f-link').value.trim();
+    const order    = parseInt(document.getElementById('f-order').value) || 1;
+    const editId   = document.getElementById('edit-id').value;
+
+    if (!title || !desc) { showToast('Título e descrição são obrigatórios.', true); return; }
+
+    const data = { title, category, description: desc, imageUrl, link, order, updatedAt: serverTimestamp() };
+
+    try {
+      if (editId) {
+        await updateDoc(doc(db, 'projects', editId), data);
+        showToast('✅ Projeto atualizado!');
+        resetForm();
+      } else {
+        data.createdAt = serverTimestamp();
+        await addDoc(collection(db, 'projects'), data);
+        showToast('✅ Projeto adicionado!');
+        resetForm();
+      }
+      loadProjects();
+    } catch(e) {
+      console.error(e);
+      showToast('Erro ao salvar. Verifique as permissões do Firebase.', true);
+    }
+  });
+
+  // ── EDIT ──
+  window.editProject = function(id) {
+    const p = window._projects[id];
+    if (!p) return;
+    document.getElementById('edit-id').value = id;
+    document.getElementById('f-title').value    = p.title || '';
+    document.getElementById('f-category').value = p.category || 'SaaS';
+    document.getElementById('f-desc').value     = p.description || '';
+    document.getElementById('f-image').value    = p.imageUrl || '';
+    document.getElementById('f-link').value     = p.link || '';
+    document.getElementById('f-order').value    = p.order || 1;
+    document.getElementById('form-title').textContent = '✏️ Editando projeto';
+    document.getElementById('btn-cancel').style.display = 'inline-block';
+    document.getElementById('form-card').scrollIntoView({ behavior: 'smooth' });
+  };
+
+  // ── DELETE ──
+  window.deleteProject = async function(id) {
+    if (!confirm('Excluir este projeto? Essa ação não pode ser desfeita.')) return;
+    try {
+      await deleteDoc(doc(db, 'projects', id));
+      showToast('🗑️ Projeto excluído.');
+      loadProjects();
+    } catch(e) {
+      showToast('Erro ao excluir.', true);
+    }
+  };
+
+  // ── CANCEL EDIT ──
+  document.getElementById('btn-cancel').addEventListener('click', resetForm);
+
+  function resetForm() {
+    document.getElementById('edit-id').value    = '';
+    document.getElementById('f-title').value    = '';
+    document.getElementById('f-category').value = 'SaaS';
+    document.getElementById('f-desc').value     = '';
+    document.getElementById('f-image').value    = '';
+    document.getElementById('f-link').value     = '';
+    document.getElementById('f-order').value    = '1';
+    document.getElementById('form-title').textContent = '+ Novo Projeto';
+    document.getElementById('btn-cancel').style.display = 'none';
+  }
+</script>
+
+</body>
+</html>
